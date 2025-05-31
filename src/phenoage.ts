@@ -16,6 +16,7 @@ export interface PhenoAgeResult {
   mortalityScore: number;
   ageDifference: number;
   interpretation: string;
+  wasClamped?: boolean;
 }
 
 /**
@@ -34,10 +35,29 @@ export function calculatePhenoAge(biomarkers: Biomarkers): PhenoAgeResult {
   
   // Calculate mortality score
   const gamma = 0.0076927;
-  const mortalityScore = 1 - Math.exp(-Math.exp(xb) * (Math.exp(120 * gamma) - 1) / gamma);
+  let mortalityScore = 1 - Math.exp(-Math.exp(xb) * (Math.exp(120 * gamma) - 1) / gamma);
+  
+  // Clamp mortality score to prevent mathematical errors
+  // If mortality score is too close to 1, the logarithm becomes undefined
+  const MAX_MORTALITY = 0.999999;
+  const MIN_MORTALITY = 0.000001;
+  const originalMortalityScore = mortalityScore;
+  mortalityScore = Math.max(MIN_MORTALITY, Math.min(MAX_MORTALITY, mortalityScore));
+  const wasClamped = mortalityScore !== originalMortalityScore;
   
   // Calculate PhenoAge
-  const phenoAge = 141.50225 + (Math.log(-0.00553 * Math.log(1 - mortalityScore)) / 0.090165);
+  let phenoAge: number;
+  try {
+    phenoAge = 141.50225 + (Math.log(-0.00553 * Math.log(1 - mortalityScore)) / 0.090165);
+    
+    // Additional validation
+    if (!isFinite(phenoAge) || isNaN(phenoAge)) {
+      throw new Error("PhenoAge calculation resulted in invalid value");
+    }
+  } catch (error) {
+    // If calculation fails, provide a meaningful error
+    throw new Error(`PhenoAge calculation error: ${error instanceof Error ? error.message : 'Unknown error'}. This can occur with extreme biomarker combinations.`);
+  }
   
   // Calculate age difference
   const ageDifference = phenoAge - biomarkers.age;
@@ -49,7 +69,8 @@ export function calculatePhenoAge(biomarkers: Biomarkers): PhenoAgeResult {
     phenoAge: Math.round(phenoAge * 10) / 10,
     mortalityScore: Math.round(mortalityScore * 1000) / 1000,
     ageDifference: Math.round(ageDifference * 10) / 10,
-    interpretation
+    interpretation,
+    ...(wasClamped && { wasClamped })
   };
 }
 

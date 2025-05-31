@@ -1,6 +1,6 @@
 {
   "name": "mcp-phenoage-clock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for calculating biological age using the Morgan Levine PhenoAge clock",
   "main": "dist/index.js",
   "type": "module",

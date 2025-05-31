@@ -109,7 +109,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 ageDifference: result.ageDifference,
                 mortalityScore: result.mortalityScore,
                 interpretation: result.interpretation,
-                summary: `Your PhenoAge is ${result.phenoAge} years (${result.ageDifference > 0 ? '+' : ''}${result.ageDifference} years ${result.ageDifference > 0 ? 'older' : 'younger'} than your chronological age)`
+                summary: `Your PhenoAge is ${result.phenoAge} years (${result.ageDifference > 0 ? '+' : ''}${result.ageDifference} years ${result.ageDifference > 0 ? 'older' : 'younger'} than your chronological age)`,
+                ...(result.wasClamped && { 
+                  warning: "Mortality score was at the mathematical limit and was adjusted to allow calculation" 
+                })
               }
             }, null, 2)
           }
