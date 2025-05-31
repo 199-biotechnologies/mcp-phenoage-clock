@@ -12,12 +12,12 @@ Based on: Levine et al. (2018) "An epigenetic biomarker of aging for lifespan an
 
 ### Via NPX (Recommended)
 ```bash
-npx @mcp/phenoage-clock
+npx mcp-phenoage-clock
 ```
 
 ### Via NPM
 ```bash
-npm install -g @mcp/phenoage-clock
+npm install -g mcp-phenoage-clock
 mcp-phenoage-clock
 ```
 
@@ -42,7 +42,7 @@ Add to your Claude Desktop configuration file:
   "mcpServers": {
     "phenoage-clock": {
       "command": "npx",
-      "args": ["@mcp/phenoage-clock"]
+      "args": ["mcp-phenoage-clock"]
     }
   }
 }
