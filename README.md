@@ -104,6 +104,7 @@ Claude will use the calculate_phenoage tool and return your biological age.
 2. **Units Matter**: Ensure your lab results match the required units
 3. **Medical Advice**: This tool is for informational purposes only. Always consult healthcare providers for medical decisions
 4. **Lab Variations**: Different labs may use different reference ranges
+5. **Formula Limitations**: In rare cases with certain biomarker combinations, the mortality score may reach mathematical limits, resulting in clamped calculations. This is a limitation of the formula, not necessarily indicative of health status
 
 ## Formula Details
 
